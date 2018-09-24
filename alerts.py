@@ -3,7 +3,26 @@ import time
 import sendgrid
 import os
 from sendgrid.helpers.mail import *
-# pprint library is used to make the output look more pretty
+
+
+#### COMMANDS FOR ENVT. VAR ####
+# echo "MONGODB_PASSWORD='YOUR PASSWORD HERE'" > mongodb.env
+# echo "mongodb.env" >> .gitignore
+# source ./mongodb.env
+
+# settings.py
+from dotenv import load_dotenv
+load_dotenv()
+
+# OR, the same with increased verbosity:
+load_dotenv(verbose=True)
+
+# OR, explicitly providing path to '.env'
+from pathlib import Path  # python3 only
+env_path = Path('.') / 'mongodb.env'
+load_dotenv(dotenv_path=env_path)
+
+
 # connect to MongoDB, change the << MONGODB URL >> to reflect your own connection string
 try:
     client = pymongo.MongoClient("mongodb://rahulvyas:" + os.environ.get('MONGODB_PASSWORD') + "@cluster0-shard-00-00-xagmg.mongodb.net:27017,cluster0-shard-00-01-xagmg.mongodb.net:27017,cluster0-shard-00-02-xagmg.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true")
@@ -53,5 +72,4 @@ def send_email():
 #send_email()
 
 
-#export MONGODB_PASSWORD=Your mongodb password here
-#os.environ.get('MONGODB_PASSWORD')
+
