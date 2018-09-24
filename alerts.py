@@ -22,6 +22,12 @@ from pathlib import Path  # python3 only
 env_path = Path('.') / 'mongodb.env'
 load_dotenv(dotenv_path=env_path)
 
+def read():
+    #pending = collection.find({"status":"pending"})
+    pending = collection.find()
+    for tx in pending:
+        print(tx)
+        send_email(str(tx))
 
 # connect to MongoDB, change the << MONGODB URL >> to reflect your own connection string
 try:
@@ -30,20 +36,11 @@ try:
 
     collection = db['test_collection']
     posts = db.posts
-
-    def read():
-        #pending = collection.find({"status":"pending"})
-        pending = collection.find()
-        for tx in pending:
-            print(tx)
     
     read()
-
+    
 except:
     print("MONGODB_PASSWORD envt variable not set!")
-
-
-
 
 
 def recurring_read():
@@ -52,24 +49,16 @@ def recurring_read():
         time.sleep(5)
 
 
-#recurring_read()
-
-
-def send_email():
+def send_email(pendingrequest):
 
     sg = sendgrid.SendGridAPIClient(apikey=os.environ.get('SENDGRID_API_KEY'))
-    from_email = Email("rahul.class@gmail.com")
-    to_email = Email("rahulvyas@plaak.com")
-    subject = "Sending with SendGrid is Fun"
-    content = Content("text/plain", "and easy to do anywhere, even with Python")
+    from_email = Email("rahulvyas@plaak.com")
+    to_email = Email("chaishepherd@plaak.com")
+    subject = "TEST Alert: Pending " + "ETH" + "request"
+    content = Content("text/plain", "This mail is an alert for the pending withdrawal request" + pendingrequest)
     mail = Mail(from_email, subject, to_email, content)
     response = sg.client.mail.send.post(request_body=mail.get())
     print(response.status_code)
     print(response.body)
     print(response.headers)
-
-
-#send_email()
-
-
 
