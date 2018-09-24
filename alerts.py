@@ -26,8 +26,8 @@ def read():
     #pending = collection.find({"status":"pending"})
     pending = collection.find()
     for tx in pending:
-        print(tx)
-        send_email(str(tx))
+        print(type(tx))
+        send_email(tx)
 
 # connect to MongoDB, change the << MONGODB URL >> to reflect your own connection string
 try:
@@ -37,7 +37,7 @@ try:
     collection = db['test_collection']
     posts = db.posts
     
-    read()
+    #read()
     
 except:
     print("MONGODB_PASSWORD envt variable not set!")
@@ -49,16 +49,20 @@ def recurring_read():
         time.sleep(5)
 
 
-def send_email(pendingrequest):
+def send_email():
 
     sg = sendgrid.SendGridAPIClient(apikey=os.environ.get('SENDGRID_API_KEY'))
     from_email = Email("rahulvyas@plaak.com")
     to_email = Email("chaishepherd@plaak.com")
-    subject = "TEST Alert: Pending " + "ETH" + "request"
-    content = Content("text/plain", "This mail is an alert for the pending withdrawal request" + pendingrequest)
+    subject = "TEST Alert: Pending " + "XRP " + "withdrawal request"
+    content = Content("text/plain", "This mail is an alert for the pending withdrawal request \n Regards, \n PLAAK Team")
     mail = Mail(from_email, subject, to_email, content)
     response = sg.client.mail.send.post(request_body=mail.get())
     print(response.status_code)
     print(response.body)
     print(response.headers)
 
+
+send_email()
+
+#print(os.environ.get('SENDGRID_API_KEY'))
